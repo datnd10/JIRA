@@ -27,6 +27,7 @@ public class AccountServiceImplementation implements AccountService {
 
     @Override
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO) {
+
         Account account = accountRequestDTO.getAccount();
         account.setPassword(passwordEncoder.encode(accountRequestDTO.getPassword()));
 
