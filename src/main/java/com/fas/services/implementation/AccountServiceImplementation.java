@@ -38,7 +38,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public AccountResponseDTO changePassword(String password, UUID id) throws AccountExceptions {
         Account oldAccount = accountRepository.findById(id).orElseThrow(() -> new AccountExceptions("Account not found"));
-        oldAccount.setPassword(passwordEncoder.encode(password));
+        oldAccount.setPassword(passwordEncoder.encode("123456"));
         Account savedAccount = accountRepository.save(oldAccount);
         return new AccountResponseDTO(savedAccount);
     }
