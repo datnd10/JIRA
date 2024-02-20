@@ -156,7 +156,7 @@ public class AccountController {
             throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
         }
 
-        if(!passwordEncoder.matches(password, "123456") {
+        if(!passwordEncoder.matches(password, "123456")) {
             throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
         }
 
