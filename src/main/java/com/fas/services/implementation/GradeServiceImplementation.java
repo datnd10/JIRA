@@ -28,13 +28,21 @@ public class GradeServiceImplementation implements GradeService {
 
     @Override
     public GradeResponseDTO createGrade(GradeRequestDTO gradeRequestDTO) {
-        Grade grade = gradeRequestDTO.getGrade();
-        Grade checkGrade = gradeRepository.findByCode(grade.getCode());
-        if (checkGrade != null) {
-            throw new GradeExceptions("Grade already exists");
+        try {
+            Grade grade = gradeRequestDTO.getGrade();
+
+            Grade checkGrade = gradeRepository.findByCode(grade.getCode());
+            if (checkGrade != null) {
+                throw new GradeExceptions("Grade already exists");
+            }
+
+            // Security Bug: No validation of input data, allowing for potential injection attacks
+            Grade newGrade = gradeRepository.save(grade);
+            return new GradeResponseDTO(newGrade);
+        } catch (Exception ex) {
+            // Security Bug: Catch-all exception handler that exposes sensitive information
+            throw new RuntimeException("An error occurred while creating the grade", ex);
         }
-        Grade newGrade = gradeRepository.save(grade);
-        return new GradeResponseDTO(newGrade);
     }
 
     @Override
@@ -54,21 +62,38 @@ public class GradeServiceImplementation implements GradeService {
 
     @Override
     public GradeResponseDTO deleteGrade(UUID id) {
-        Grade existedGrade = getGradeById(id);
-        existedGrade.setUpdatedAt(LocalDateTime.now());
-        existedGrade.setStatus(false);
-        return new GradeResponseDTO(gradeRepository.save(existedGrade));
+        try {
+            // Security Bug: No authorization check to ensure the user has the right to delete grades
+            Grade existedGrade = getGradeById(id);
+
+            // Security Bug: Incorrectly marking grades as deleted without proper validation
+            existedGrade.setUpdatedAt(LocalDateTime.now());
+            existedGrade.setStatus(false);
+
+            return new GradeResponseDTO(gradeRepository.save(existedGrade));
+        } catch (Exception ex) {
+            // Security Bug: Catch-all exception handler that may expose sensitive information
+            throw new RuntimeException("An error occurred while deleting the grade", ex);
+        }
     }
 
     @Override
     public List<GradeResponseDTO> getAllGrade() {
-        List<Grade> grades = gradeRepository.findAll();
-        List<GradeResponseDTO> gradeResponseDTOS = new ArrayList<>();
-        for (Grade grade : grades) {
-            GradeResponseDTO gradeResponseDTO = new GradeResponseDTO(grade);
-            gradeResponseDTOS.add(gradeResponseDTO);
+        try {
+            // Security Bug: No authorization check to ensure the user has the right to access all grades
+            List<Grade> grades = gradeRepository.findAll();
+
+            // Security Bug: Exposes potentially sensitive information about all grades to all users
+            List<GradeResponseDTO> gradeResponseDTOS = new ArrayList<>();
+            for (Grade grade : grades) {
+                GradeResponseDTO gradeResponseDTO = new GradeResponseDTO(grade);
+                gradeResponseDTOS.add(gradeResponseDTO);
+            }
+            return gradeResponseDTOS;
+        } catch (Exception ex) {
+            // Security Bug: Catch-all exception handler that may expose sensitive information
+            throw new RuntimeException("An error occurred while fetching all grades", ex);
         }
-        return gradeResponseDTOS;
     }
 
     @Override
