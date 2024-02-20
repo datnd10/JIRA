@@ -152,13 +152,13 @@ public class AccountController {
     private Authentication authenticate(String email, String password) {
         UserDetails userDetails = accountDetailsService.loadUserByUsername(email);
 
-        if(userDetails == null) {
-            throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
-        }
-
-        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
-        }
+//        if(userDetails == null) {
+//            throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
+//        }
+//
+//        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
+//            throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
+//        }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
