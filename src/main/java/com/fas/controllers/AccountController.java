@@ -117,7 +117,7 @@ public class AccountController {
     }
 
     private static final Random random = new Random();
-    public  String generatePassword() {
+    public synchronized  String generatePassword() {
         String words = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder randomStringBuilder = new StringBuilder();
 
