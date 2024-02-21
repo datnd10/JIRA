@@ -34,7 +34,7 @@ public class InstructorResponseDTO {
 
     private Date birthDay;
 
-    private String IdCard;
+    private String idCard;
 
     private boolean gender;
 
@@ -56,7 +56,7 @@ public class InstructorResponseDTO {
         this.phone = instructor.getPhone();
         this.address = instructor.getAddress();
         this.birthDay = instructor.getBirthDay();
-        this.IdCard = instructor.getIdCard();
+        this.idCard = instructor.getIdCard();
         this.gender = instructor.isGender();
         this.status = instructor.isStatus();
         this.campus = instructor.getCampus();
