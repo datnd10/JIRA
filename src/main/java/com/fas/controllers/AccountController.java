@@ -32,23 +32,30 @@ import java.util.Random;
 @RestController
 @RequestMapping("/account")
 public class AccountController {
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private RoleSevice roleSevice;
-    @Autowired
-    private CampusService campusService;
-    @Autowired
-    private JwtProvider jwtProvider;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AccountDetailsService accountDetailsService;
 
+    private final AccountService accountService;
+    private final RoleSevice roleSevice;
+    private final CampusService campusService;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
+    private final AccountDetailsService accountDetailsService;
+
+    private final EmailService emailService;
+
+    @Autowired
+    public AccountController(AccountService accountService, RoleSevice roleSevice,
+                             CampusService campusService, JwtProvider jwtProvider,
+                             PasswordEncoder passwordEncoder,
+                             AccountDetailsService accountDetailsService, EmailService emailService) {
+        this.accountService = accountService;
+        this.roleSevice = roleSevice;
+        this.campusService = campusService;
+        this.jwtProvider = jwtProvider;
+        this.passwordEncoder = passwordEncoder;
+        this.accountDetailsService = accountDetailsService;
+        this.emailService = emailService;
+    }
     private static final String email="manh@gmail.com";
-
-    @Autowired
-    private EmailService emailService;
 
     /**
      * loginUser method to authenticate and generate token for the user, and handle login logic.
@@ -150,15 +157,16 @@ public class AccountController {
      * @param  password  the user's password
      * @return           the authenticated user details
      */
+    private static final String BAD_CREDENTIALS_MESSAGE = "Your email, or password is incorrect. Please try again";
     private Authentication authenticate(String email, String password) {
         UserDetails userDetails = accountDetailsService.loadUserByUsername(email);
 
         if(userDetails == null) {
-            throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
+            throw new BadCredentialsException(BAD_CREDENTIALS_MESSAGE);
         }
 
-        if(!passwordEncoder.matches(password, "123456")) {
-            throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
+        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new BadCredentialsException(BAD_CREDENTIALS_MESSAGE);
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -168,7 +176,7 @@ public class AccountController {
         UserDetails userDetails = accountDetailsService.loadUserByUsername(email);
 
         if(userDetails == null) {
-            throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
+            throw new BadCredentialsException(BAD_CREDENTIALS_MESSAGE);
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

@@ -43,12 +43,10 @@ public class EventServiceImplementation implements EventService {
     @Override
     public EventResponseDTO deleteEvent(UUID eventId) {
         Event existedEvent = getEventById(eventId);
-        System.out.println(existedEvent);
         existedEvent.setUpdateAt(LocalDateTime.now());
         existedEvent.setStatus(!existedEvent.isStatus());
         Event savedEvent = eventRepository.save(existedEvent);
-        EventResponseDTO eventResponseDTO = new EventResponseDTO(savedEvent);
-        return eventResponseDTO;
+        return new EventResponseDTO(savedEvent);
     }
 
     @Override

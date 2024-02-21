@@ -16,7 +16,7 @@ public class GradeResponseDTO {
 
     private boolean status = true;
 
-    public List<StudentResponseDTO> students;
+    private List<StudentResponseDTO> students;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
