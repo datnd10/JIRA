@@ -29,7 +29,7 @@ public class CourseController {
      * @return            a message details object with the created course response and success code
      */
     @PostMapping("/course")
-    private MessageDetails<CourseResponseDTO> createCourse(@RequestBody @Valid CourseRequestDTO courseReq) {
+    public MessageDetails<CourseResponseDTO> createCourse(@RequestBody @Valid CourseRequestDTO courseReq) {
         CourseResponseDTO course = courseService.creatCourse(courseReq);
         return new MessageDetails<CourseResponseDTO>("Course created successfully", course, Code.SUCCESS);
     }

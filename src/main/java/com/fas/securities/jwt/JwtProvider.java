@@ -4,18 +4,17 @@ import com.fas.securities.services.AccountDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.List;
 
 @Component
 public class JwtProvider {
-    // Security Vulnerability: Exposing Secret Key in Code
-    // This exposes the secret key to anyone who can access the codebase
-    // It's recommended to use secure storage mechanisms for secret keys
-    private static final String SECRET_KEY = "InsecureSecretKey";
+    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateToken(Authentication authentication) {
         AccountDetails accountDetails = (AccountDetails) authentication.getPrincipal();
@@ -30,14 +29,14 @@ public class JwtProvider {
                 .claim("role", roles.get(0))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JwtConstant.EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+                .signWith(key).compact();
     }
 
     public String getEmailFromJwtToken(String jwt) {
         jwt = jwt.substring(7);
 
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(key)
                 .build().parseClaimsJws(jwt).getBody();
 
         return String.valueOf(claims.getSubject());

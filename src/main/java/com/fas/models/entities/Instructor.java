@@ -47,7 +47,7 @@ public class Instructor {
     @NotNull(message = "Birth day must not be null")
     private Date birthDay;
 
-    @Pattern(regexp = "^[0-9]*$", message = "Only number allowed")
+    @Pattern(regexp = "\\d", message = "Only number allowed")
     @NotBlank(message = "ID Card must not be blank")
     @Size(min = 12, max = 12, message = "ID Card must be 12 digits")
     private String idCard;
