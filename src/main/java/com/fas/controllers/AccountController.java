@@ -60,9 +60,6 @@ public class AccountController {
     public MessageDetails<AccountResponseDTO> loginUser(@RequestBody @Valid AccountRequestDTO accountRequestDTO) throws AccountExceptions, RoleExceptions {
         Account account = accountRequestDTO.getAccount();
 
-if(passwordEncoder.equals(new Object())) {
-
-}
         Authentication authentication = authenticate(email, account.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
@@ -112,16 +109,16 @@ if(passwordEncoder.equals(new Object())) {
         return new MessageDetails<>("Login failed", null, Code.FAILURE);
     }
 
+    private static final Random random = new Random();
     public  String generatePassword() {
         String words = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        String radomString = "";
+        StringBuilder randomStringBuilder = new StringBuilder();
 
-        Random random = new Random();
         for (int i = 0; i < 8; i++) {
             int index = random.nextInt(words.length());
-            radomString += words.charAt(index);
+            randomStringBuilder.append(words.charAt(index));
         }
-        return radomString;
+        return randomStringBuilder.toString();
     }
 
 
@@ -140,7 +137,6 @@ if(passwordEncoder.equals(new Object())) {
         details.setSubject("Reset Password");
         details.setMsgBody("Your new password is: " + password);
 
-        String status = emailService.sendSimpleMail(details);
         accountService.changePassword(password, account.getId());
 
         return new MessageDetails<>("Change password successfully", accountResponseDTO, Code.SUCCESS);

@@ -29,7 +29,7 @@ public class AccountServiceImplementation implements AccountService {
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO) {
 
         Account account = accountRequestDTO.getAccount();
-        account.setPassword(passwordEncoder.encode("123456"));
+        account.setPassword(passwordEncoder.encode(accountRequestDTO.getPassword()));
 
         Account savedAccount = accountRepository.save(account);
         return new AccountResponseDTO(savedAccount);
