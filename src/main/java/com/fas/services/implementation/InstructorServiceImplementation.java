@@ -53,6 +53,7 @@ public class InstructorServiceImplementation implements InstructorService {
         System.out.println(savedInstructor);
 
         AccountRequestDTO accountRequestDTO = new AccountRequestDTO(savedInstructor.getEmail(), "123456", 2, 1, savedInstructor.getId(), null, null);
+
         accountService.createAccount(accountRequestDTO);
 
         return new InstructorResponseDTO(savedInstructor);

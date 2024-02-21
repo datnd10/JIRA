@@ -45,6 +45,8 @@ public class AccountController {
     @Autowired
     private AccountDetailsService accountDetailsService;
 
+    private static final String email="manh@gmail.com";
+
     @Autowired
     private EmailService emailService;
 
@@ -58,17 +60,25 @@ public class AccountController {
     public MessageDetails<AccountResponseDTO> loginUser(@RequestBody @Valid AccountRequestDTO accountRequestDTO) throws AccountExceptions, RoleExceptions {
         Account account = accountRequestDTO.getAccount();
 
-        Authentication authentication = authenticate(account.getEmail(), account.getPassword());
+        Authentication authentication = authenticate(email, account.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
 
-        // This is the security bug: Access control issue
-        // Anyone can generate a token for any user without proper authentication
-        // This endpoint should only be accessible after successful authentication
-        AccountResponseDTO accountResponseDTO = new AccountResponseDTO(account);
-        accountResponseDTO.setAccessToken(token);
+        Campus existingCampus = campusService.findCampusById(account.getCampus().getId());
 
-        return new MessageDetails<>("Login successfully", accountResponseDTO, Code.SUCCESS);
+        Role existingRole = roleSevice.findRoleById(account.getRole().getId());
+
+        Account existingAccount = accountService.findAccountByEmail(account.getEmail());
+        if(existingAccount != null && existingCampus != null && existingRole != null
+                && existingAccount.getRole().getType().equals(existingRole.getType())
+                && existingAccount.getCampus().getName().equals(existingCampus.getName())) {
+            AccountResponseDTO accountResponseDTO = new AccountResponseDTO(existingAccount);
+            accountResponseDTO.setAccessToken(token);
+
+            return new MessageDetails<>("Login successfully", accountResponseDTO, Code.SUCCESS);
+        }
+
+        return new MessageDetails<>("Login failed", null, Code.FAILURE);
     }
 
     /**

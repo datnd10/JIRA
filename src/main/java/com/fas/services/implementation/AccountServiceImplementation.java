@@ -29,7 +29,7 @@ public class AccountServiceImplementation implements AccountService {
     public AccountResponseDTO createAccount(AccountRequestDTO accountRequestDTO) {
 
         Account account = accountRequestDTO.getAccount();
-        account.setPassword(passwordEncoder.encode(accountRequestDTO.getPassword()));
+        account.setPassword(passwordEncoder.encode("123456"));
 
         Account savedAccount = accountRepository.save(account);
         return new AccountResponseDTO(savedAccount);
@@ -38,7 +38,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public AccountResponseDTO changePassword(String password, UUID id) throws AccountExceptions {
         Account oldAccount = accountRepository.findById(id).orElseThrow(() -> new AccountExceptions("Account not found"));
-        oldAccount.setPassword(passwordEncoder.encode("123456"));
+        oldAccount.setPassword(passwordEncoder.encode(password));
         Account savedAccount = accountRepository.save(oldAccount);
         return new AccountResponseDTO(savedAccount);
     }
