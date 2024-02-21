@@ -29,6 +29,7 @@ public class WebSecurityConfig {
     private AccountDetailsService accountDetailsService;
     @Autowired
     private JwtProvider jwtProvider;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

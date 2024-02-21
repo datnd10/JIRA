@@ -60,6 +60,9 @@ public class AccountController {
     public MessageDetails<AccountResponseDTO> loginUser(@RequestBody @Valid AccountRequestDTO accountRequestDTO) throws AccountExceptions, RoleExceptions {
         Account account = accountRequestDTO.getAccount();
 
+if(passwordEncoder.equals(new Object())) {
+
+}
         Authentication authentication = authenticate(email, account.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);

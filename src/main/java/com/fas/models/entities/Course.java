@@ -34,7 +34,7 @@ public class Course {
 
     @NotNull(message = "noCredit must not be null")
     @Positive(message = "noCredit must be a positive integer")
-    private Integer noCredit;
+    private Integer no_credit;
 
     private boolean status = true;
 
@@ -54,7 +54,7 @@ public class Course {
         this.code = code;
         this.name = name;
         this.description = description;
-        this.noCredit = noCredit;
+        this.no_credit = noCredit;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
