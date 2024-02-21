@@ -122,7 +122,10 @@ public class AccountController {
         StringBuilder randomStringBuilder = new StringBuilder();
 
         for (int i = 0; i < 8; i++) {
-            int index = random.nextInt(words.length());
+            int index;
+            synchronized (random) {
+                index = random.nextInt(words.length());
+            }
             randomStringBuilder.append(words.charAt(index));
         }
         return randomStringBuilder.toString();
