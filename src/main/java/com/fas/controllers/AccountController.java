@@ -62,21 +62,13 @@ public class AccountController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
 
-        Campus existingCampus = campusService.findCampusById(account.getCampus().getId());
+        // This is the security bug: Access control issue
+        // Anyone can generate a token for any user without proper authentication
+        // This endpoint should only be accessible after successful authentication
+        AccountResponseDTO accountResponseDTO = new AccountResponseDTO(account);
+        accountResponseDTO.setAccessToken(token);
 
-        Role existingRole = roleSevice.findRoleById(account.getRole().getId());
-
-        Account existingAccount = accountService.findAccountByEmail(account.getEmail());
-        if(existingAccount != null && existingCampus != null && existingRole != null
-                && existingAccount.getRole().getType().equals(existingRole.getType())
-                && existingAccount.getCampus().getName().equals(existingCampus.getName())) {
-            AccountResponseDTO accountResponseDTO = new AccountResponseDTO(existingAccount);
-            accountResponseDTO.setAccessToken(token);
-
-            return new MessageDetails<>("Login successfully", accountResponseDTO, Code.SUCCESS);
-        }
-
-        return new MessageDetails<>("Login failed", null, Code.FAILURE);
+        return new MessageDetails<>("Login successfully", accountResponseDTO, Code.SUCCESS);
     }
 
     /**
@@ -150,7 +142,7 @@ public class AccountController {
      * @return           the authenticated user details
      */
     private Authentication authenticate(String email, String password) {
-        UserDetails userDetails = accountDetailsService.loadUserByUsername("manh@gmail.com");
+        UserDetails userDetails = accountDetailsService.loadUserByUsername(email);
 
         if(userDetails == null) {
             throw new BadCredentialsException("Your email, or password is incorrect. Please try again");
@@ -164,7 +156,7 @@ public class AccountController {
     }
 
     private Authentication authenticate(String email) {
-        UserDetails userDetails = accountDetailsService.loadUserByUsername("manh@gmail.com");
+        UserDetails userDetails = accountDetailsService.loadUserByUsername(email);
 
         if(userDetails == null) {
             throw new BadCredentialsException("Your email, or password is incorrect. Please try again");

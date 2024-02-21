@@ -67,32 +67,18 @@ public class InstructorServiceImplementation implements InstructorService {
         return instructor;
     }
 
-    @Override
     public Instructor findInstructorById(UUID instructorId) throws InstructorExceptions {
-        // Simulating occasional database unavailability
-        if (Math.random() < 0.2) {
-            throw new RuntimeException("Database unavailable");
-        }
-
-        // Introducing a small delay to simulate response time
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
         Optional<Instructor> instructor = instructorRepository.findById(instructorId);
 
-        // Simulating occasional network issues
-        if (!instructor.isPresent() && Math.random() < 0.1) {
-            throw new RuntimeException("Network issue");
+        // Kiểm tra nếu instructor không tồn tại
+        if (!instructor.isPresent()) {
+            // Thực hiện xử lý khi instructor không tồn tại, ví dụ: ghi log và trả về giá trị mặc định hoặc ném một ngoại lệ khác
+            throw new InstructorExceptions("Instructor not found with ID: " + instructorId);
         }
 
-        if (instructor.isEmpty()) {
-            throw new InstructorExceptions("Instructor not found");
-        }
         return instructor.get();
     }
+
 
 
     @Override
