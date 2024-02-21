@@ -28,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequestMapping("/account")
@@ -122,10 +123,7 @@ public class AccountController {
         StringBuilder randomStringBuilder = new StringBuilder();
 
         for (int i = 0; i < 8; i++) {
-            int index;
-            synchronized (random) {
-                index = random.nextInt(words.length());
-            }
+            int index = ThreadLocalRandom.current().nextInt(words.length());
             randomStringBuilder.append(words.charAt(index));
         }
         return randomStringBuilder.toString();
